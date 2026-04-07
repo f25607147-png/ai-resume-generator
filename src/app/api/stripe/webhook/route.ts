@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
   }
 
-  let event: ReturnType<typeof stripe.webhooks.constructEvent> extends Promise<infer T> ? T : ReturnType<typeof stripe.webhooks.constructEvent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let event: any;
   try {
     event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET);
   } catch {
@@ -23,10 +24,7 @@ export async function POST(request: NextRequest) {
   );
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as {
-      metadata?: { user_id?: string };
-      customer?: string | null;
-    };
+    const session = event.data.object;
     const userId = session.metadata?.user_id;
     if (userId) {
       await supabase
@@ -40,7 +38,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object as { customer?: string | null };
+    const subscription = event.data.object;
     await supabase
       .from('profiles')
       .update({ subscription_plan: 'free' })

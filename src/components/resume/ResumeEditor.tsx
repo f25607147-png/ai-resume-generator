@@ -10,7 +10,10 @@ import { ResumePreview } from './ResumePreview';
 import { exportToPDF, getResumeFileName } from '@/lib/pdf';
 
 function generateId() {
-  return Math.random().toString(36).substr(2, 9);
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
 }
 
 interface ResumeEditorProps {
