@@ -61,6 +61,7 @@ export function exportToPDF(elementId: string, filename: string = 'resume.pdf') 
 
 export function formatDate(dateStr: string): string {
   if (!dateStr) return '';
+  // Expected input format: 'YYYY-MM' (e.g., "2023-06")
   const date = new Date(dateStr + '-01');
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
