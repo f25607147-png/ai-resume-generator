@@ -5,7 +5,11 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Resume } from '@/types';
 
-const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
+function isThisCalendarMonth(dateStr: string): boolean {
+  const date = new Date(dateStr);
+  const now = new Date();
+  return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+}
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -35,7 +39,7 @@ export default async function DashboardPage() {
 
   const stats = [
     { label: 'Total Resumes', value: resumes.length, icon: '📄' },
-    { label: 'This Month', value: resumes.filter((r) => new Date(r.created_at) > new Date(Date.now() - THIRTY_DAYS_IN_MS)).length, icon: '📅' },
+    { label: 'This Month', value: resumes.filter((r) => isThisCalendarMonth(r.created_at)).length, icon: '📅' },
     { label: 'Templates Used', value: new Set(resumes.map((r) => r.template)).size, icon: '🎨' },
   ];
 
